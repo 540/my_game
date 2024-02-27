@@ -63,6 +63,7 @@ class Player extends SpriteAnimationGroupComponent
   @override
   void update(double dt) {
     _updateMovement(dt);
+    _updatePlayerState();
 
     super.update(dt);
   }
@@ -70,5 +71,13 @@ class Player extends SpriteAnimationGroupComponent
   void _updateMovement(double dt) {
     _velocity.x = _horizontalMovement * _moveSpeed;
     position.x += _velocity.x * dt;
+  }
+
+  void _updatePlayerState() {
+    if (_velocity.x < 0 && scale.x > 0) {
+      flipHorizontallyAroundCenter();
+    } else if (_velocity.x > 0 && scale.x < 0) {
+      flipHorizontallyAroundCenter();
+    }
   }
 }
