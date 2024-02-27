@@ -7,6 +7,8 @@ import 'package:my_game/my_level.dart';
 class MyGame extends FlameGame {
   @override
   FutureOr<void> onLoad() async {
+    await images.loadAllImages();
+
     World world = MyLevel();
 
     CameraComponent cam = CameraComponent.withFixedResolution(
