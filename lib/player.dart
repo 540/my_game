@@ -43,7 +43,7 @@ class Player extends SpriteAnimationGroupComponent
 
   @override
   bool onKeyEvent(RawKeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
-    _horizontalMovement = 0;
+    dontMove();
 
     final hasToMoveToTheLeft =
         keysPressed.contains(LogicalKeyboardKey.arrowLeft);
@@ -59,12 +59,24 @@ class Player extends SpriteAnimationGroupComponent
     return super.onKeyEvent(event, keysPressed);
   }
 
+  void dontMove() {
+    _horizontalMovement = 0;
+  }
+
   void _moveToTheLeft() {
     _horizontalMovement += -1;
   }
 
   void _moveToTheRight() {
     _horizontalMovement += 1;
+  }
+
+  void moveToTheLeftWithJoystick() {
+    _horizontalMovement = -1;
+  }
+
+  void moveToTheRightWithJoystick() {
+    _horizontalMovement = 1;
   }
 
   @override

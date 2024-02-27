@@ -8,6 +8,10 @@ import 'package:my_game/player.dart';
 class MyLevel extends World {
   late TiledComponent _level;
 
+  final Player player;
+
+  MyLevel({required this.player});
+
   @override
   FutureOr<void> onLoad() async {
     _level = await TiledComponent.load('Level-01.tmx', Vector2.all(16));
@@ -35,7 +39,7 @@ class MyLevel extends World {
   }
 
   void _addPlayer(TiledObject tiledObject) {
-    Player player = Player(position: Vector2(tiledObject.x, tiledObject.y));
+    player.position = Vector2(tiledObject.x, tiledObject.y);
     add(player);
   }
 }
