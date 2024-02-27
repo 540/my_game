@@ -1,14 +1,20 @@
 import 'dart:async';
 
 import 'package:flame/components.dart';
+import 'package:flutter/services.dart';
 import 'package:my_game/my_game.dart';
 
 enum PlayerState {
   idle,
 }
 
-class Player extends SpriteAnimationGroupComponent with HasGameRef<MyGame> {
+class Player extends SpriteAnimationGroupComponent
+    with HasGameRef<MyGame>, KeyboardHandler {
   Player({position}) : super(position: position);
+
+  double _horizontalMovement = 0;
+  final double _moveSpeed = 100;
+  final Vector2 _velocity = Vector2.zero();
 
   @override
   FutureOr<void> onLoad() {
@@ -26,5 +32,43 @@ class Player extends SpriteAnimationGroupComponent with HasGameRef<MyGame> {
     current = PlayerState.idle;
 
     return super.onLoad();
+  }
+
+  @override
+  bool onKeyEvent(RawKeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
+    _horizontalMovement = 0;
+
+    final hasToMoveToTheLeft =
+        keysPressed.contains(LogicalKeyboardKey.arrowLeft);
+    final hasToMoveToTheRight =
+        keysPressed.contains(LogicalKeyboardKey.arrowRight);
+
+    if (hasToMoveToTheLeft) {
+      _moveToTheLeft();
+    } else if (hasToMoveToTheRight) {
+      _moveToTheRight();
+    }
+
+    return super.onKeyEvent(event, keysPressed);
+  }
+
+  void _moveToTheLeft() {
+    _horizontalMovement += -1;
+  }
+
+  void _moveToTheRight() {
+    _horizontalMovement += 1;
+  }
+
+  @override
+  void update(double dt) {
+    _updateMovement(dt);
+
+    super.update(dt);
+  }
+
+  void _updateMovement(double dt) {
+    _velocity.x = _horizontalMovement * _moveSpeed;
+    position.x += _velocity.x * dt;
   }
 }
