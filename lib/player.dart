@@ -4,9 +4,7 @@ import 'package:flame/components.dart';
 import 'package:flutter/services.dart';
 import 'package:my_game/my_game.dart';
 
-enum PlayerState {
-  idle,
-}
+enum PlayerState { idle, running }
 
 class Player extends SpriteAnimationGroupComponent
     with HasGameRef<MyGame>, KeyboardHandler {
@@ -26,10 +24,19 @@ class Player extends SpriteAnimationGroupComponent
         textureSize: Vector2.all(32),
       ),
     );
+    SpriteAnimation runningAnimation = SpriteAnimation.fromFrameData(
+      gameRef.images.fromCache('Main Characters/Mask Dude/Run (32x32).png'),
+      SpriteAnimationData.sequenced(
+        amount: 12,
+        stepTime: 0.05,
+        textureSize: Vector2.all(32),
+      ),
+    );
 
-    animations = {PlayerState.idle: idleAnimation};
-
-    current = PlayerState.idle;
+    animations = {
+      PlayerState.idle: idleAnimation,
+      PlayerState.running: runningAnimation
+    };
 
     return super.onLoad();
   }
@@ -74,10 +81,16 @@ class Player extends SpriteAnimationGroupComponent
   }
 
   void _updatePlayerState() {
+    PlayerState playerState = PlayerState.idle;
+
     if (_velocity.x < 0 && scale.x > 0) {
       flipHorizontallyAroundCenter();
     } else if (_velocity.x > 0 && scale.x < 0) {
       flipHorizontallyAroundCenter();
     }
+
+    if (_velocity.x > 0 || _velocity.x < 0) playerState = PlayerState.running;
+
+    current = playerState;
   }
 }
